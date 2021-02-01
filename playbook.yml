@@ -1,0 +1,32 @@
+---
+- name: Setup Vagrant box
+  hosts: all
+  become: true
+
+  pre_tasks:
+  - name: update apt cache
+    apt:
+      update_cache: yes
+
+  tasks:
+  - name: Install required additional OS packages
+    apt:
+      name: 
+      - unzip
+      - direnv
+
+  - name: Add apt signing key for terraform repo
+    ansible.builtin.apt_key:
+      url: https://apt.releases.hashicorp.com/gpg
+      state: present
+
+  - name: Add terraform apt repo
+    ansible.builtin.apt_repository:
+      repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
+      state: present
+
+  - name: Install terraform
+    apt:
+      name: terraform
+
+...
